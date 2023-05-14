@@ -1,0 +1,51 @@
+[
+	{
+		"id": 1,
+		"title": "Flor1",
+		"price": 1000,
+		"thumbnail": "Hola",
+		"code": "AAA",
+		"stock": 4,
+		"status": "OK"
+	},
+	{
+		"id": 3,
+		"title": "Flor3",
+		"price": 1000,
+		"thumbnail": "Hola",
+		"code": "AAC",
+		"stock": 6
+	},
+	{
+		"id": 4,
+		"title": "bulbo",
+		"price": 1000,
+		"thumbnail": "Hola",
+		"code": "nico2",
+		"stock": 7
+	},
+	{
+		"id": 100,
+		"title": "a ver a ver",
+		"price": 1000,
+		"thumbnail": "Hola",
+		"code": "bianca",
+		"stock": 5
+	},
+	{
+		"id": 101,
+		"title": "bulbo raiz",
+		"price": 1000,
+		"thumbnail": "Hola",
+		"code": "nico4",
+		"stock": 0
+	},
+	{
+		"id": 102,
+		"title": "bulbo raiz santi",
+		"price": 1000,
+		"thumbnail": "Hola",
+		"code": "nico88",
+		"stock": 0
+	}
+]
