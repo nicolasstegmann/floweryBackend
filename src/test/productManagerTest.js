@@ -1,6 +1,6 @@
-import { ProductManager } from "./productManager.js";
+import { ProductManager } from "../managers/productManager.js";
 
-const productManager = new ProductManager('./products.json');
+const productManager = new ProductManager('./src/data/products.json');
 
 const test = async () => {
     //Test Case 1: todos los parámetros deben ser obligatorios

@@ -5,8 +5,7 @@
 		"price": 1000,
 		"thumbnail": "Hola",
 		"code": "AAA",
-		"stock": 4,
-		"status": "OK"
+		"stock": 4
 	},
 	{
 		"id": 3,
@@ -25,15 +24,7 @@
 		"stock": 7
 	},
 	{
-		"id": 100,
-		"title": "a ver a ver",
-		"price": 1000,
-		"thumbnail": "Hola",
-		"code": "bianca",
-		"stock": 5
-	},
-	{
-		"id": 101,
+		"id": 5,
 		"title": "bulbo raiz",
 		"price": 1000,
 		"thumbnail": "Hola",
@@ -41,7 +32,7 @@
 		"stock": 0
 	},
 	{
-		"id": 102,
+		"id": 6,
 		"title": "bulbo raiz santi",
 		"price": 1000,
 		"thumbnail": "Hola",
