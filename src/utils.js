@@ -10,13 +10,11 @@ const storage = multer.diskStorage({
         cb(null,`${__dirname}/public/img`)
     },
     filename: function(req,file,cb){
-        console.log(file);
         cb(null,`${Date.now()}-${file.originalname}`)
     }
 })
 
 export const uploader = multer({storage,onError:function(err,next){
-    console.log(err);
     next();
 }});
 export default __dirname;

@@ -1,32 +1,16 @@
 import express from 'express';
-import { ProductManager } from "./managers/productManager.js";
+import productsRouter from './routes/products.router.js'
+import cartsRouter from './routes/carts.router.js'
+import __dirname from './utils.js'
 
 const app = express();
-const productManager = new ProductManager('./src/data/products.json');
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}));
 
-app.get('/products', async (req, res) => {
-    try {
-        const {limit} = req.query;
-        const products = await productManager.getProducts();
-        const limitValue = parseInt(limit) >= 0 ? parseInt(limit) : products.length;
-        res.send({products: products.slice(0, limitValue)});
-    } catch (error) {
-        res.status(500).send({status: 0, msg: error.message});
-    }
-});
-
-app.get('/products/:productId', async (req, res) => {
-    try {
-        const productId = parseInt(req.params.productId);
-        const product = await productManager.getProductById(productId)
-        res.send({product});
-    } catch (error) {
-        res.status(404).send({status: 0, msg: error.message});
-    }
-});
+app.use('/files', express.static(__dirname + '/public'));
+app.use('/api/products', productsRouter);
+app.use('/api/carts', cartsRouter);
 
 const port = 8080;
-app.listen(port, () => console.log(`Flowery Backend server is up on port ${port}`));
+app.listen(port, () => console.log(`Flowery Backend server is now up on port ${port}`));
