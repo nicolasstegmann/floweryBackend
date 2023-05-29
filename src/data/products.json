@@ -29,7 +29,11 @@
 		"price": 4500,
 		"status": true,
 		"stock": 50,
-		"category": "Gramineas",
-		"thumbnails": []
+		"category": "Gramínea",
+		"thumbnails": [
+			"2",
+			"3",
+			"4"
+		]
 	}
 ]

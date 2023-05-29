@@ -19,6 +19,17 @@ class Product {
 
         if (stock < 0) throw new Error('Stock cannot be negative');
 
+        let thumbnailsArray = [];
+        if (thumbnails) {
+            if (typeof thumbnails === 'string') {
+                thumbnailsArray = [thumbnails];
+            } else if (Array.isArray(thumbnails)) {
+                thumbnailsArray = thumbnails;
+            } else {
+                throw new Error('Thumbnails must be a string or an array of strings');
+            }
+        }
+
         this.id = shortid.generate();
         this.title = title;
         this.description = description;
@@ -27,7 +38,7 @@ class Product {
         this.status = true;
         this.stock = stock;
         this.category = category;
-        this.thumbnails = Array.isArray(thumbnails) ? thumbnails : [];
+        this.thumbnails = thumbnailsArray;
     }
 }
 
@@ -100,6 +111,18 @@ class ProductManager {
         if (updatedProduct.price < 0) throw new Error('Price cannot be negative');
         if (updatedProduct.stock < 0) throw new Error('Stock cannot be negative');
         if (updatedProduct.id !== productId) throw new Error('Id cannot be updated');        
+
+        let thumbnailsArray = [];
+        if (updatedProduct.thumbnails) {
+            if (typeof updatedProduct.thumbnails === 'string') {
+                thumbnailsArray = [updatedProduct.thumbnails];
+            } else if (Array.isArray(updatedProduct.thumbnails)) {
+                thumbnailsArray = updatedProduct.thumbnails;
+            } else {
+                throw new Error('Thumbnails must be a string or an array of strings');
+            }
+            updatedProduct.thumbnails = thumbnailsArray;
+        }
 
         if (updatedFields.code && updatedFields.code !== existingProduct.code && this.products.some((product) => product.code === updatedProduct.code && product.id !== updatedProduct.id )) {
             throw new Error('The specified code is in use by another existant product');
