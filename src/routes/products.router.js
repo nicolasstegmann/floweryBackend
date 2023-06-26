@@ -1,17 +1,17 @@
 import { Router } from "express";
-import { productsUpdated } from "../socketUtils.js";
-import { ProductManager } from "../managers/productManager.js";
+import { productsUpdated } from "../utils/socketUtils.js";
+import { ProductManager } from "../dao/managers/products.manager.js";
+import uploader from '../utils/multer.js';
 
-const productManager = new ProductManager('./src/data/products.json');
+const productManager = new ProductManager();
 
 const router = Router();
 
 router.get('/', async (req, res) => {
     try {
         const {limit} = req.query;
-        const products = await productManager.getProducts();
-        const limitValue = parseInt(limit) >= 0 ? parseInt(limit) : products.length;
-        res.send({status: 1, products: products.slice(0, limitValue)});
+        const products = await productManager.getProducts(limit);
+        res.send({status: 1, products: products});
     } catch (error) {
         res.status(500).send({status: 0, msg: error.message});
     }
@@ -27,10 +27,12 @@ router.get('/:productId', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', uploader.array('thumbnails'), async (req, res) => {
     try {
-        //uso de multer para subir imagenes al servidor para mas adelante.
         const newProductFields = req.body;
+        const files = req.files;
+        const filesUrls = files.map(file => `http://localhost:8080/files/uploads/${file.filename}`);
+        newProductFields.thumbnails = filesUrls;        
         const newProduct = await productManager.addProduct(newProductFields);
         productsUpdated(req.app.get('io'));
         res.send({status: 1, msg: 'Product added successfully', product: newProduct});

@@ -1,23 +1,43 @@
 import fs from 'fs';
 import shortid from 'shortid';
 class Product {
-    constructor({ title, description, code, price, stock, category, thumbnails }) {        
+    constructor({ title, description, code, price, stock, category, thumbnails }) {  
         if (!title || !description || !code || !price || stock === null || category === undefined) throw new Error('All parameters should be specified');
 
         if (
             typeof title !== 'string' ||
             typeof description !== 'string' ||
             typeof code !== 'string' ||
-            typeof price !== 'number' ||
-            typeof stock !== 'number' ||
+            (typeof price !== 'string' && typeof price !== 'number') ||
+            (typeof stock !== 'string' && typeof stock !== 'number') ||
             typeof category !== 'string'
         ) {
             throw new Error('Invalid parameter datatype');
         }
 
-        if (price < 0) throw new Error('Price cannot be negative');
+        let parsedPrice = price;
 
-        if (stock < 0) throw new Error('Stock cannot be negative');
+        if (typeof price === 'string') {
+          parsedPrice = parseFloat(price);
+          
+          if (isNaN(parsedPrice)) {
+            throw new Error('Invalid parameter datatype');
+          }
+        }
+
+        if (parsedPrice < 0) throw new Error('Price cannot be negative');
+
+        let parsedStock = stock;
+
+        if (typeof stock === 'string') {
+            parsedStock = parseInt(stock);
+          
+          if (isNaN(parsedStock)) {
+            throw new Error('Invalid parameter datatype');
+          }
+        }  
+
+        if (parsedStock < 0) throw new Error('Stock cannot be negative');
 
         let thumbnailsArray = [];
         if (thumbnails) {
@@ -34,9 +54,9 @@ class Product {
         this.title = title;
         this.description = description;
         this.code = code;
-        this.price = price;
+        this.price = parsedPrice;
         this.status = true;
-        this.stock = stock;
+        this.stock = parsedStock;
         this.category = category;
         this.thumbnails = thumbnailsArray;
     }

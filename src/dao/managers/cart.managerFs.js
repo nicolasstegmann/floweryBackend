@@ -1,6 +1,6 @@
 import fs from 'fs';
 import shortid from 'shortid';
-import { ProductManager } from './productManager.js';
+import { ProductManager } from './product.managerFs.js';
 
 const productManager = new ProductManager('./src/data/products.json');
 
