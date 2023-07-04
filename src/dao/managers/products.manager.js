@@ -5,13 +5,44 @@ class ProductManager {
     this.productsModel = ProductsModel;
   }
 
-  getProducts = async (limit = null ) => {
+  getProducts = async (limit = 10, page = 1, sort, category, available) => {
     try {
       let query = this.productsModel.find();
-      if (limit) {
-        query = query.limit(parseInt(limit));
+      if (category) {
+        const trimmedCategory = category.trim();
+        const categoryRegex = new RegExp(`^${trimmedCategory}$`, 'i');
+        query = query.where('category').equals(categoryRegex);
       }
-      const products = await query.exec();
+      if (available) {
+        const lowerAvailable = available.toLowerCase();
+        if (lowerAvailable  === 'true') {
+          query = query.where('stock').gt(0);
+        } else if (lowerAvailable === 'false') {
+          query = query.where('stock').equals(0);
+        } else {
+          throw new Error('Invalid available value. true or false expected');
+        }
+      }
+      if (sort) {
+        const lowerSort = sort.toLowerCase();
+        if (lowerSort === 'asc') {
+          query = query.sort({ price: 1 });
+        } else if (lowerSort === 'desc') {
+          query = query.sort({ price: -1 });
+        } else {
+          throw new Error('Invalid sort value. asc or desc expected');
+        }
+      }
+
+      const products = await this.productsModel.paginate(query, {
+        limit: parseInt(limit) || 10,
+        lean: true,
+        page: parseInt(page) || 1,
+        customLabels: {
+          docs: 'products',
+          totalDocs: 'totalProducts',
+        }
+      });
       return products;
     } catch (error) {
       throw new Error(`Failed to retrieve: ${error.message}`);
