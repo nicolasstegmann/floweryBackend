@@ -5,7 +5,7 @@ class ProductManager {
     this.productsModel = ProductsModel;
   }
 
-  getProducts = async (limit = 10, page = 1, sort, category, available) => {
+  getProducts = async (limit = 10, page = 1, sort, category, available, baseUrl) => {
     try {
       let query = this.productsModel.find();
       if (category) {
@@ -43,7 +43,26 @@ class ProductManager {
           totalDocs: 'totalProducts',
         }
       });
-      return products;
+
+      // Build navigation links
+      let navLinks = {};
+
+      if (baseUrl) {
+        const sortOptions = ['asc', 'desc'];
+        const availableOptions = ['true', 'false'];
+        const sortQuery = sort && sortOptions.includes(sort.toLowerCase()) ? `&sort=${sort}` : '';
+        const categoryQuery = category ? `&category=${encodeURIComponent(category)}` : '';
+        const availableQuery = available && availableOptions.includes(available.toLowerCase()) ? `&available=${available}` : '';
+        navLinks = {
+            firstLink: products.totalPages > 1? `${baseUrl}?limit=${limit}&page=1${sortQuery}${categoryQuery}${availableQuery}` : null,
+            prevLink: products.hasPrevPage ? `${baseUrl}?limit=${limit}&page=${products.prevPage}${sortQuery}${categoryQuery}${availableQuery}` : null,
+            nextLink: products.hasNextPage ? `${baseUrl}?limit=${limit}&page=${products.nextPage}${sortQuery}${categoryQuery}${availableQuery}` : null,
+            lastLink: products.totalPages > 1? `${baseUrl}?limit=${limit}&page=${products.totalPages}${sortQuery}${categoryQuery}${availableQuery}` : null
+        };
+      }
+      const productsWithLinks = { ...products, ...navLinks };
+      return productsWithLinks;
+
     } catch (error) {
       throw new Error(`Failed to retrieve: ${error.message}`);
     }

@@ -10,21 +10,10 @@ const router = Router();
 router.get('/', async (req, res) => { 
     try {
         const { limit = 10, page = 1, sort, category, available } = req.query;
-        const products = await productManager.getProducts(limit, page, sort, category, available);        
-        // Add navigation links to response
+        // Get baseUrl for navigation links
         const baseUrl = `${req.protocol}://${req.get('host')}${req.originalUrl.split('?')[0]}`;
-        const sortOptions = ['asc', 'desc'];
-        const availableOptions = ['true', 'false'];
-        const sortQuery = sort && sortOptions.includes(sort.toLowerCase()) ? `&sort=${sort}` : '';
-        const categoryQuery = category ? `&category=${encodeURIComponent(category)}` : '';
-        const availableQuery = available && availableOptions.includes(available.toLowerCase()) ? `&available=${available}` : '';
-        const navLinks = {
-            firstLink: products.totalPages > 1? `${baseUrl}?limit=${limit}&page=1${sortQuery}${categoryQuery}${availableQuery}` : null,
-            prevLink: products.hasPrevPage ? `${baseUrl}?limit=${limit}&page=${products.prevPage}${sortQuery}${categoryQuery}${availableQuery}` : null,
-            nextLink: products.hasNextPage ? `${baseUrl}?limit=${limit}&page=${products.nextPage}${sortQuery}${categoryQuery}${availableQuery}` : null,
-            lastLink: products.totalPages > 1? `${baseUrl}?limit=${limit}&page=${products.totalPages}${sortQuery}${categoryQuery}${availableQuery}` : null
-        }
-        res.send({status: 1, ...products, ...navLinks});
+        const products = await productManager.getProducts(limit, page, sort, category, available, baseUrl);        
+        res.send({status: 1, ...products});
     } catch (error) {
         res.status(500).send({status: 0, msg: error.message});
     }
