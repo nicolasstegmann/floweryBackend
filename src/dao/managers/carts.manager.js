@@ -18,7 +18,7 @@ class CartManager {
 
   getCart = async (cartId) => {
     try {
-      const cart = await this.cartModel.findById(cartId);
+      const cart = await this.cartModel.findById(cartId).lean();
       if (!cart) {
         throw new Error('Cart not found');
       }

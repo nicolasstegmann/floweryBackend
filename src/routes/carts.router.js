@@ -18,7 +18,7 @@ router.get('/:cartId', async (req, res) => {
     try {
         const cartId = req.params.cartId;
         const cart = await cartManager.getCart(cartId);
-        res.json({ status: 1, cartProducts: cart.products });
+        res.json({ status: 1, cart });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
