@@ -15,6 +15,9 @@ import { productsUpdated, chat } from './utils/socketUtils.js';
 import displayRoutes from 'express-routemap';
 import mongoose from 'mongoose';
 import { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, SESSION_SECRET } from './utils/mongoDBConfig.js';
+import passport from 'passport';
+import initializePassport from './config/passport.config.js';
+import flash from 'connect-flash';
 
 //consts
 const PORT = 8080;
@@ -55,6 +58,12 @@ app.use(session({
     saveUninitialized: false
 }))
 
+//Passport config
+initializePassport(passport);
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+
 //Public folder config
 app.use('/files', express.static(path.join(__dirname, './public')));
 
@@ -68,6 +77,26 @@ app.use('/api/carts', cartsRouter);
 app.use('/api/messages', messagesRouter);
 app.use('/', viewsRouter);
 
+//Error handling
+/*
+app.use(function (err, req, res, next) {
+    var responseData;
+    if (err) {
+        res.status(400);
+        responseData = {
+            statusText: 'Bad Request',
+            jsonSchemaValidation: true,
+            validations: err
+        };
+        if (req.xhr || req.get('Content-Type') === 'application/json') {
+            res.json(responseData);
+        }
+    } else {
+        // pass error to next error middleware handler
+        next(err);
+    }
+});
+*/
 //Server config
 const serverHttp = app.listen(PORT, () => {
     displayRoutes(app);

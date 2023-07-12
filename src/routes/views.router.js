@@ -20,6 +20,10 @@ router.get('/login', publicAccess, (req, res) => {
     res.render('login', {title: 'Hello Flowerier!!', style: 'login.css'});
 })
 
+router.get('/resetpassword', publicAccess, (req, res) => {
+    res.render('resetPassword', {title: 'Hello Flowerier!! Lets recover your password', style: 'login.css'});
+})
+
 router.get('/', privateAccess, (req, res) => {
     res.render('userProfile', {title: 'Flowerier profile', style: 'login.css', user: req.session.user});
 })

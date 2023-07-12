@@ -1,89 +1,54 @@
 import { Router } from 'express';
 import usersModel from '../dao/models/users.model.js';
+import passport from 'passport';
 import { ADMIN_USER, ADMIN_PASSWORD } from '../utils/adminConfig.js';
+import { createHash, isValidPassword } from '../utils/utils.js';
 
 const router = Router();
 
-router.post('/register', async (req, res) => {
-    try {
-        const { firstName, lastName, email, birthDate, password } = req.body;
-        
-        if (email.toLowerCase() === ADMIN_USER.toLowerCase()) {
-            return res.status(400).send({ status: 0, msg: "Flowerier already exists" });
-        }
+router.post('/register', passport.authenticate('register', { failureRedirect: '/api/sessions/authFailureRegister', failureFlash: true }), async (req, res) => {
+    req.session.user = {
+        name: `${req.user.firstName} ${req.user.lastName}`,
+        email: req.user.email,
+        birthDate: req.user.birthDate,
+        userRole: 'user'
+    };
+    res.send({ status: 1, msg: "New flowerier registered" });
+})
 
-        const exists = await usersModel.findOne({ email: { $regex: new RegExp(`^${email}$`, 'i') } });
-        if (exists) {
-            return res.status(400).send({ status: 0, msg: "Flowerier already exists" });
-        }
-
-        const user = {
-            firstName,
-            lastName,
-            email: email.toLowerCase(),
-            birthDate,
-            password
-        };
-
-        await usersModel.create(user);
-
-        req.session.user = {
-            name: `${user.firstName} ${user.lastName}`,
-            email: user.email,
-            birthDate: user.birthDate,
-            userRole: 'user'
-        };
-        
-        res.send({ status: 1, msg: "New flowerier registered" });
-    } catch (error) {
-        res.status(500).send({ status: 0, msg: error.message });
-    }
+router.post('/login', passport.authenticate('login', { failureRedirect: '/api/sessions/authFailureLogin', failureFlash: true }), async (req, res) => {
+    if (!req.user) return res.status(400).send({ status: 0, msg: 'Wrong flowerier' });
+    req.session.user = {
+        name: `${req.user.firstName} ${req.user.lastName}`,
+        email: req.user.email,
+        birthDate: req.user.birthDate,
+        userRole: req.user.userRole
+    };
+    res.send({ status: 1, msg: 'Flowerier successfully logged in', user: req.session.user });
 });
 
-router.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        let user;
-
-        if (email.toLowerCase() === ADMIN_USER.toLowerCase()) {
-            if (password !== ADMIN_PASSWORD) {
-                return res.status(400).send({ status: 0, msg: 'Password is incorrect' });
-            }
-
-            user = {
-                firstName: 'Admin',
-                lastName: 'Coder',
-                email: ADMIN_USER,
-                birthDate: '',
-                userRole: 'admin'
-            };
-        } else {
-            user = await usersModel.findOne({ email: { $regex: new RegExp(`^${email}$`, 'i') } });
-            if (!user) {
-                return res.status(400).send({ status: 0, msg: 'Wrong flowerier!' });
-            }
-            if (user.password !== password) {
-                return res.status(400).send({ status: 0, msg: 'Password is incorrect' });
-            }
-            user = { ...user.toObject(), userRole: 'user' };
-        }
-
-        req.session.user = {
-            name: `${user.firstName} ${user.lastName}`,
-            email: user.email,
-            birthDate: user.birthDate,
-            userRole: user.userRole
-        };
-
-        res.send({ status: 1, msg: 'Flowerier successfully logged in', user: req.session.user });
-    } catch (error) {
-        res.status(500).send({ status: 0, msg: error.message });
-    }
+router.post('/resetpassword', passport.authenticate('resetPassword', { failureRedirect: '/api/sessions/authFailureReset', failureFlash: true }), async (req, res) => {
+    res.send({ status: 1, msg: 'Password successfully reseted. You will be redirected to login page' });
 });
 
 router.post('/logout', (req, res) => {
     req.session.destroy();
     res.send({ status: 1, msg: 'Flowerier successfully logged out' });
+});
+
+router.get('/authFailureRegister', (req, res) => {
+    const error = req.flash('error')[0];
+    res.status(400).send({ status: 0, msg: error });
+});
+
+router.get('/authFailureLogin', (req, res) => {
+    const error = req.flash('error')[0];
+    res.status(400).send({ status: 0, msg: error });
+});
+
+router.get('/authFailureReset', (req, res) => {
+    const error = req.flash('error')[0];
+    res.status(400).send({ status: 0, msg: error });
 });
 
 export default router;
