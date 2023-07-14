@@ -1,0 +1,4 @@
+const APP_ID = '361015';
+const CLIENT_ID = 'Iv1.c284323baf2a4af2';
+const CLIENT_SECRET = '38f075c7d37eacf397f184532d8a40654ad40092';
+export { APP_ID, CLIENT_ID, CLIENT_SECRET };
