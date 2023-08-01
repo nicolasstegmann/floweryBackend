@@ -26,9 +26,17 @@ export const passportCall = (strategy) => {
     };
 };
 
+export const tokenFromCookieExtractor = req => {
+    let token = null;
+    if (req && req.cookies) {
+        token = req?.cookies[authConfig.AUTH_COOKIE];
+    }
+    return token;
+};
+
 export const authorization = (role) => {
     return async (req, res, next) => {
-        const token = req.cookies[authConfig.AUTH_COOKIE];
+        const token = tokenFromCookieExtractor(req);
         if (!token) {
             return res.status(401).send({ status: 0, msg: 'Unauthorized' });
         }
