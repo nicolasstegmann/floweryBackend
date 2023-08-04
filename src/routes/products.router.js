@@ -10,7 +10,6 @@ const router = Router();
 
 router.get('/', authorization(['admin', 'user']), async (req, res) => { 
     try {
-        console.log('get products');
         const { limit = 10, page = 1, sort, category, available } = req.query;
         // Get baseUrl for navigation links
         const baseUrl = `${req.protocol}://${req.get('host')}${req.originalUrl.split('?')[0]}`;
