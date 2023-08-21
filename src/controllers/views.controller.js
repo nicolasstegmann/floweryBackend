@@ -1,5 +1,6 @@
-import { ProductManager } from '../dao/managers/products.manager.js';
-import { CartManager } from '../dao/managers/carts.manager.js';
+import { ProductService } from '../services/products.services.js';
+
+import CartMongoManager from '../dao/mongoManagers/carts.manager.js';
 
 const register = async (req, res) => {
     res.render('register', {title: 'Welcome new Flowerier!!', style: 'login.css'});
@@ -18,8 +19,8 @@ const userProfile = async (req, res) => {
 }
 
 const staticProducts = async (req, res) => {
-    const productManager = new ProductManager();
-    const products = await productManager.getProducts();
+    const productsServices = new ProductService();
+    const products = await productsServices.getProducts(100);
     res.render('home', {title: 'Flowery 4107 Products', style: 'product.css', products: products});
 }
 
@@ -28,7 +29,7 @@ const realTimeProducts = async (req, res) => {
 }
 
 const webchat = async (req, res) => {
-    res.render('chat', { style: 'chat.css', title: 'Flowery 4107 Webchat'});
+    res.render('chat', { style: 'chat.css', title: 'Flowery 4107 Webchat', user: req.user});
 }
 
 const products = async (req, res) => {
@@ -36,8 +37,8 @@ const products = async (req, res) => {
         const { limit = 10, page = 1, sort, category, available } = req.query;
         // Get baseUrl for navigation links
         const baseUrl = `${req.protocol}://${req.get('host')}${req.originalUrl.split('?')[0]}`;
-        const productManager = new ProductManager();
-        const products = await productManager.getProducts(limit, page, sort, category, available, baseUrl);
+        const productsServices = new ProductService();
+        const products = await productsServices.getProducts(limit, page, sort, category, available, baseUrl);
         res.render('productList', {title: 'Flowery 4107 Products', style: 'productList.css', products: products, user: req.user});
     } catch (error) {
         res.status(500).send(error.message);
@@ -47,8 +48,8 @@ const products = async (req, res) => {
 const carts = async (req, res) => {
     try {
         const cartId = req.params.cartId;
-        const cartManager = new CartManager();
-        const cart = await cartManager.getCart(cartId);
+        const cartManager = new CartMongoManager();
+        const cart = await cartManager.getCartById(cartId);
         res.render('cart', {title: 'Flowery 4107 Cart', style: 'cart.css', cart: cart});
     } catch (error) {
         res.status(500).send(error.message);

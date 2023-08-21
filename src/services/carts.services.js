@@ -1,26 +1,25 @@
-import e from 'connect-flash';
-import { CartManager } from '../dao/managers/carts.manager.js';
-import { ProductManager } from '../dao/managers/products.manager.js';
+import { cartsRepository } from '../repositories/index.js';
+import { ProductService } from './products.services.js';
 
 class CartService {
 
     constructor() {
-        this.cartManager = new CartManager();
-        this.productManager = new ProductManager();
+        this.cartRepository = cartsRepository;
+        this.productService = new ProductService();
     }
 
     createCart = async () => {
         try {
-            const newCart = await this.cartManager.createCart();
+            const newCart = await this.cartRepository.createCart();
             return newCart;
         } catch (error) {
             throw new Error(`Failed to add cart: ${error.message}`);
         }
     }
 
-    getCart = async (cartId) => {
+    getCartById = async (cartId) => {
         try {
-            const cart = await this.cartManager.getCartById(cartId);
+            const cart = await this.cartRepository.getCartById(cartId);
             if (!cart) {
                 throw new Error('Cart not found');
             }
@@ -32,7 +31,7 @@ class CartService {
 
     checkProductStock = async (productId, quantity) => {
         try {
-            const product = await this.productManager.getProductById(productId);
+            const product = await this.productService.getProductById(productId);
             if (!product) {
                 throw new Error('Product not found');
             }
@@ -47,14 +46,14 @@ class CartService {
     addToCart = async (cartId, productId) => {
         try {
             let stockControl = 0;
-            const cart = await this.cartManager.getCartById(cartId);
+            const cart = await this.cartRepository.getCartById(cartId);
             if (!cart) {
                 throw new Error('Cart not found');
             }
             if (!productId) {
                 throw new Error('Product ID is required');
             }
-            const product = await this.productManager.getProductById(productId);
+            const product = await this.productService.getProductById(productId);
             if (!product) {
                 throw new Error('Product not found');
             }
@@ -67,7 +66,7 @@ class CartService {
                 stockControl = 1;
             }
             await this.checkProductStock(productId, stockControl);
-            await this.cartManager.updateCartProducts(cartId, cart.products);
+            await this.cartRepository.updateCartProducts(cartId, cart.products);
             return cart;
         } catch (error) {
             throw error;
@@ -76,7 +75,7 @@ class CartService {
 
     removeFromCart = async (cartId, productId) => {
         try {
-            const cart = await this.cartManager.getCartById(cartId);
+            const cart = await this.cartRepository.getCartById(cartId);
             if (!cart) {
                 throw new Error('Cart not found');
             }
@@ -91,7 +90,7 @@ class CartService {
             if (existingProduct.quantity === 0) {
                 cart.products = cart.products.filter((product) => product.product._id.toString() !== productId);
             }
-            await this.cartManager.updateCartProducts(cartId, cart.products);
+            await this.cartRepository.updateCartProducts(cartId, cart.products);
             return cart;
         } catch (error) {
             throw error;
@@ -100,7 +99,7 @@ class CartService {
 
     updateProductQuantity = async (cartId, productId, quantity) => {
         try {
-            const cart = await this.cartManager.getCartById(cartId);
+            const cart = await this.cartRepository.getCartById(cartId);
             if (!cart) {
                 throw new Error('Cart not found');
             }
@@ -118,7 +117,7 @@ class CartService {
                 throw new Error('Quantity cannot be zero or negative');
             }
             existingProduct.quantity = quantity;
-            await this.cartManager.updateCartProducts(cartId, cart.products);
+            await this.cartRepository.updateCartProducts(cartId, cart.products);
             return cart;
         } catch (error) {
             throw error;
@@ -127,12 +126,12 @@ class CartService {
 
     emptyCart = async (cartId) => {
         try {
-            const cart = await this.cartManager.getCartById(cartId);
+            const cart = await this.cartRepository.getCartById(cartId);
             if (!cart) {
                 throw new Error('Cart not found');
             }
             cart.products = [];
-            await this.cartManager.updateCartProducts(cartId, cart.products);
+            await this.cartRepository.updateCartProducts(cartId, cart.products);
             return cart;
         } catch (error) {
             throw new Error(`Failed to empty cart: ${error.message}`);
@@ -141,7 +140,7 @@ class CartService {
 
     addProductsToCart = async (cartId, products) => {
         try {
-            const cart = await this.cartManager.getCartById(cartId);
+            const cart = await this.cartRepository.getCartById(cartId);
             if (!cart) {
                 throw new Error('Cart not found');
             }
@@ -159,7 +158,7 @@ class CartService {
                 if (!quantity || quantity <= 0) {
                     throw new Error('Invalid quantity');
                 }
-                const product = await this.productManager.getProductById(productId);
+                const product = await this.productService.getProductById(productId);
                 if (!product) {
                     throw new Error(`Product not found: ${productId}`);
                 }
@@ -172,7 +171,7 @@ class CartService {
                 }
             }
             cart.products.push(...productsToAdd);
-            await this.cartManager.updateCartProducts(cartId, cart.products);
+            await this.cartRepository.updateCartProducts(cartId, cart.products);
             return cart;
         } catch (error) {
             throw new Error(`Failed to add products to cart: ${error.message}`);

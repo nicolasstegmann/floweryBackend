@@ -5,6 +5,7 @@ import { createHash, isValidPassword, tokenFromCookieExtractor } from "../utils/
 import GitHubStrategy from "passport-github2";
 import jwt from 'passport-jwt';
 import { default as token } from 'jsonwebtoken';
+import UserDTO from "../dto/users.dto.js";
 
 // JWT
 const JWTStrategy = jwt.Strategy;
@@ -40,7 +41,8 @@ const initializePassport = () => {
                 role,
             };
             const user = await UsersModel.create(newUser);
-            return done(null, user);
+            const userDTO = new UserDTO(user);
+            return done(null, userDTO);
         } catch (error) {
             errorMsg = error.message;
             return done( errorMsg );
@@ -76,8 +78,8 @@ const initializePassport = () => {
                     errorMsg = "Password is incorrect";
                     return done(null, false, errorMsg );
                 }
-                const { password: pass, _id, __v, ...userBrief } = user._doc;
-                userJwt = userBrief;
+                const userDTO = new UserDTO(user);
+                userJwt = userDTO;
             }
             const jwt = generateToken(userJwt);
             return done(null, jwt);            
@@ -105,7 +107,8 @@ const initializePassport = () => {
                 }
                 const newHashedPassword = createHash(password);
                 await UsersModel.updateOne({ _id: user._id }, { $set: { password: newHashedPassword } });
-                return done(null, user);
+                const userDTO = new UserDTO(user);                
+                return done(null, userDTO);
             }
         } catch (error) {
             errorMsg = error.message;
@@ -129,8 +132,8 @@ const initializePassport = () => {
                 }
                 user = await UsersModel.create(user);
             }
-            const { password, _id, __v, ...userBrief } = user._doc;
-            const jwt = generateToken(userBrief);            
+            const userDTO = new UserDTO(user);
+            const jwt = generateToken(userDTO);            
             return done(null, jwt);
         } catch (error) {
             return done( 'Github login failure' );
@@ -142,7 +145,8 @@ const initializePassport = () => {
         secretOrKey: process.env.AUTH_SECRET
     }, async (jwt_payload, done) => {
         try {
-            return done(null, jwt_payload);
+            const user = jwt_payload.user;
+            return done(null, user);
         } catch (error) {
             done(error);
         }

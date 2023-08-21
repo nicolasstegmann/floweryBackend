@@ -7,26 +7,24 @@ socket.on('newUserConnected', data => {
         toast: true,
         position: 'top-end',
         icon: 'success',
-        title: `${data} se ha unido al chat`,
+        title: `${data.email} se ha unido al chat`,
         showConfirmButton: false,
         timer: 10000
     })
 });
 
-Swal.fire({
-    title: 'Hola Flowerier!',
-    input: 'text',
-    text: 'Ingresa tu usuario para identificarte en el chat',
-    inputValidator: (value) => {
-        return !value && 'Necesitas ingresar un usuario!'
-    },
-    allowOutsideClick: false
-}).then((result) => {
-    user = result.value;
+fetch('/api/sessions/currentuser')
+  .then(response => response.json())
+  .then(data => {
+    user = data.user; // Supongo que el usuario se encuentra en el campo 'user'
     let title = document.getElementById('title');
-    title.innerHTML = `Bienvenido ${user} a Flowery 4107 Webchat!`;
+    title.innerHTML = `Bienvenido ${user.email} a Flowery 4107 Webchat!`;
+    // Emitir el evento 'authenticated' con el usuario al servidor
     socket.emit('authenticated', user);
-});    
+  })
+  .catch(error => {
+    console.error('Error fetching current user:', error);
+  });   
 
 chatbox.addEventListener('keyup', evt => {
     if (evt.key === "Enter") {

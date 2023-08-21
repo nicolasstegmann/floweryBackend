@@ -1,5 +1,5 @@
 const register = (req, res) => {
-    res.send({ status: 1, msg: "New flowerier registered" });
+    res.send({ status: 1, msg: "New flowerier registered" , user: req.user});
 };
 
 const login = (req, res) => {
@@ -26,7 +26,7 @@ const githubCallback = (req, res) => {
 };
 
 const currentUser = (req, res) => {
-    res.send({ status: 1, msg: 'Flowerier logged in', user: req.user.user });
+    res.send({ status: 1, msg: 'Flowerier logged in', user: req.user });
 };
 
 export default {
