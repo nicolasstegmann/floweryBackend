@@ -18,4 +18,6 @@ router.put('/:cartId/products/:productId', authorization(['user']), cartControll
 
 router.delete('/:cartId', authorization(['user']), cartController.emptyCart);
 
+router.post('/:cartId/checkout', authorization(['user']), cartController.checkoutCart);
+
 export default router;

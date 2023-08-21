@@ -151,6 +151,38 @@ class ProductService {
             throw error;
         }
     };
+
+    getProductStock = async (productId) => {
+        try {
+            const product = await this.productRepository.getProductById(productId);
+            if (!product) {
+                throw new Error('Product not found');
+            }
+            return product.stock;
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    updateProductStock = async (productId, quantity) => {
+        try {
+            if (!quantity ) {
+                throw new Error('Invalid quantity');
+            }
+            const product = await this.productRepository.getProductById(productId);
+            if (!product) {
+                throw new Error('Product not found');
+            }
+            const newStock = product.stock + quantity;
+            if (newStock < 0) {
+                throw new Error('Not enough stock');
+            }
+            return await this.productRepository.updateProduct(productId, { stock: newStock });
+        } catch (error) {
+            throw error;
+        }
+    };
+
 }
 
 export { ProductService }
