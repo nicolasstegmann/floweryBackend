@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import compression from 'express-compression';
 
 export default function configureMiddlewares(app) {
   app.use(express.json());
@@ -10,4 +11,7 @@ export default function configureMiddlewares(app) {
     methods: ['GET', 'POST', 'PUT', 'DELETE']
   }));
   app.use(cookieParser());
+  app.use(compression({
+    brotli: {enabled: true, zlib: {}}
+  }));
 }
