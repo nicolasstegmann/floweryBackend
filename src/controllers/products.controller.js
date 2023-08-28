@@ -68,10 +68,20 @@ const deleteProductById = async (req, res) => {
     }
 };
 
+const getMockingProducts = async (req, res) => {
+    try {
+        const products = await productService.getMockingProducts();
+        res.send({ status: 1, products: products });
+    } catch (error) {
+        res.status(500).send({ status: 0, msg: error.message });
+    }
+};
+
 export default {
     getProducts,
     getProductById,
     addProduct,
     updateProductById,
-    deleteProductById
+    deleteProductById,
+    getMockingProducts
 };

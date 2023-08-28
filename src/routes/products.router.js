@@ -7,6 +7,8 @@ const router = Router();
 
 router.get('/', authorization(['admin', 'user']), productController.getProducts);
 
+router.get('/mockingproducts', authorization(['admin', 'user']), productController.getMockingProducts);
+
 router.get('/:productId', authorization(['admin', 'user']), productController.getProductById);
 
 router.post('/', authorization('admin'), uploader.array('thumbnails'), productController.addProduct);

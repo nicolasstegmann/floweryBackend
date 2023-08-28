@@ -1,4 +1,5 @@
 import { productsRepository } from '../repositories/index.js';
+import { mockingProducts } from '../utils/mocks.js';
 
 class ProductService {
     constructor() {
@@ -183,6 +184,14 @@ class ProductService {
         }
     };
 
+    getMockingProducts = async () => {
+        try {
+            const products = await mockingProducts();
+            return products;
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 export { ProductService }
