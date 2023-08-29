@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { passportCall } from '../utils/utils.js';
 import cookieParser from 'cookie-parser';
 import sessionController from '../controllers/sessions.controller.js';
+import EnumErrors from '../utils/errorHandler/enum.js';
+import FloweryCustomError from '../utils/errorHandler/FloweryCustomError.js';
 
 const router = Router();
 
@@ -20,5 +22,16 @@ router.get('/github', passportCall('github', { scope: ['user:email'] }), session
 router.get('/githubcallback', passportCall('github'), sessionController.githubCallback);
 
 router.get('/currentuser', passportCall('jwt', { session: false }), sessionController.currentUser);
+
+//handler for invalid routes
+router.all('*', (req, res) => {
+    FloweryCustomError.createError({
+        name: 'Routing Error',
+        message: 'Invalid route',
+        type: EnumErrors.ROUTING_ERROR.type,
+        recievedParams: { route: req.originalUrl },
+        statusCode: EnumErrors.ROUTING_ERROR.statusCode
+    });    
+});
 
 export default router;

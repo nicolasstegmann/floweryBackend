@@ -2,6 +2,8 @@ import { Router } from "express";
 import uploader from '../utils/multer.js';
 import { authorization } from '../utils/utils.js'
 import productController from '../controllers/products.controller.js';
+import EnumErrors from '../utils/errorHandler/enum.js';
+import FloweryCustomError from '../utils/errorHandler/FloweryCustomError.js';
 
 const router = Router();
 
@@ -16,5 +18,16 @@ router.post('/', authorization('admin'), uploader.array('thumbnails'), productCo
 router.put('/:productId', authorization('admin'), productController.updateProductById);
 
 router.delete('/:productId', authorization('admin'), productController.deleteProductById);
+
+//handler for invalid routes
+router.all('*', (req, res) => {
+    FloweryCustomError.createError({
+        name: 'Routing Error',
+        message: 'Invalid route',
+        type: EnumErrors.ROUTING_ERROR.type,
+        recievedParams: { route: req.originalUrl },
+        statusCode: EnumErrors.ROUTING_ERROR.statusCode
+    });    
+});
 
 export default router;
