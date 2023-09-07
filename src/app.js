@@ -10,6 +10,7 @@ import configurePublicFolder from './config/public.config.js';
 import routes from './routes/index.js';
 import configureSocket from './config/socket.config.js';
 import displayRoutes from 'express-routemap';
+import { floweryLogger } from './utils/logger.js';
 
 //Environment
 const env = configureCommander();
@@ -31,7 +32,7 @@ const PORT = process.env.PORT;
 
 const serverHttp = app.listen(PORT, () => {
     displayRoutes(app);
-    console.log(`Flowery 4107 Backend server is now up on port ${PORT} in ${env} mode using ${envFileName} file`)
+    floweryLogger('info', `Flowery 4107 Backend server is now up on port ${PORT} in ${env} mode using ${envFileName} file`);
 });
 
 configureSocket(serverHttp, app);

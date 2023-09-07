@@ -1,3 +1,4 @@
+# Ignorar la carpeta node_modules
 node_modules/
 package-lock.json
 
@@ -6,3 +7,6 @@ package-lock.json
 
 # Excepto .env.example
 !.env.example
+
+# Ignorar la carpeta logs
+logs/
