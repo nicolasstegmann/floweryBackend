@@ -5,6 +5,7 @@ import CartMongoManager from './mongoManagers/carts.manager.js';
 import MessageMongoManager from './mongoManagers/messages.manager.js';
 import ProductMongoManager from './mongoManagers/products.manager.js';
 import TicketMongoManager from './mongoManagers/tickets.managers.js';
+import UserMongoManager from './mongoManagers/users.managers.js';
 
 /*
 import cartsFile from './fileManagers/carts.manager.js';
@@ -66,6 +67,19 @@ export class TicketsDaoFactory {
                 throw new Error('File persistence not implemented yet');
             default:
                 return new TicketMongoManager();
+        }
+    }
+} 
+
+export class UsersDaoFactory {
+    static getDao() {
+        switch (process.env.PERSISTANCE_TYPE) {
+            case 'MONGODB':
+                return new UserMongoManager();
+            case 'FILE':
+                throw new Error('File persistence not implemented yet');
+            default:
+                return new UserMongoManager();
         }
     }
 } 

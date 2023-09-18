@@ -10,8 +10,12 @@ const login = async (req, res) => {
     res.render('login', {title: 'Hello Flowerier!!', style: 'login.css'});
 }
 
+const resetPasswordRequest = async (req, res) => {
+    res.render('resetPasswordRequest', {title: 'Hello Flowerier!! Lets recover your password', style: 'login.css'});
+}
+
 const resetPassword = async (req, res) => {
-    res.render('resetPassword', {title: 'Hello Flowerier!! Lets recover your password', style: 'login.css'});
+    res.render('resetPassword', {title: 'Hello Flowerier!! Lets recover your password', email: req.email, token: req.token, style: 'login.css'});
 }
 
 const userProfile = async (req, res) => {
@@ -59,6 +63,7 @@ const carts = async (req, res) => {
 export default {
     register,
     login,
+    resetPasswordRequest,
     resetPassword,
     userProfile,
     staticProducts,

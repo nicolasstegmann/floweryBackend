@@ -35,7 +35,7 @@ const addToCart = async (event) => {
     if (result.status === 1) {
         alert(`Producto agregado al carrito ${cartId} exitosamente!`);
     } else {
-        alert('Error al agregar el producto al carrito');
+        alert(`Error al agregar el producto al carrito ${result.errorObject.message}`);
     }
 }
 

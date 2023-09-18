@@ -22,7 +22,7 @@ const initializePassport = () => {
     }, async (req, username, password, done) => {
         let errorMsg;
         try {
-            const { firstName, lastName, email, birthDate, role } = req.body;
+            const { firstName, lastName, email, birthDate } = req.body;
             if (username.toLowerCase() === process.env.ADMIN_USER.toLowerCase()) {
                 errorMsg = "Flowerier already exists";
                 return done(null, false, errorMsg );
@@ -38,7 +38,6 @@ const initializePassport = () => {
                 email: email.toLowerCase(),
                 birthDate,
                 password: createHash(password),
-                role,
             };
             const user = await UsersModel.create(newUser);
             const userDTO = new UserDTO(user);
@@ -96,6 +95,10 @@ const initializePassport = () => {
     }, async (req, username, password, done) => {
         let errorMsg;
         try {
+            if (username.toLowerCase() !== req.email.toLowerCase()) {
+                errorMsg = "Invalid flowerier email in token";
+                return done(null, false, errorMsg );
+            }
             if (username.toLowerCase() === process.env.ADMIN_USER.toLowerCase()) {
                 errorMsg = "Admin password cannot be reset";
                 return done(null, false, errorMsg );
@@ -103,6 +106,10 @@ const initializePassport = () => {
                 const user = await UsersModel.findOne({ email: { $regex: new RegExp(`^${username}$`, 'i') } });
                 if (!user) {
                     errorMsg = "Wrong flowerier";
+                    return done(null, false, errorMsg );
+                }
+                if (isValidPassword(user, password)) {
+                    errorMsg = "New password cannot be the same as the old one";
                     return done(null, false, errorMsg );
                 }
                 const newHashedPassword = createHash(password);
