@@ -25,12 +25,12 @@ const initializePassport = () => {
             const { firstName, lastName, email, birthDate } = req.body;
             if (username.toLowerCase() === process.env.ADMIN_USER.toLowerCase()) {
                 errorMsg = "Flowerier already exists";
-                return done(null, false, errorMsg );
+                return done(null, false, errorMsg);
             }
             const exists = await UsersModel.findOne({ email: { $regex: new RegExp(`^${username}$`, 'i') } });
             if (exists) {
                 errorMsg = "Flowerier already exists";
-                return done(null, false, errorMsg );
+                return done(null, false, errorMsg);
             }
             const newUser = {
                 firstName,
@@ -44,7 +44,7 @@ const initializePassport = () => {
             return done(null, userDTO);
         } catch (error) {
             errorMsg = error.message;
-            return done( errorMsg );
+            return done(errorMsg);
         }
     }));
 
@@ -58,7 +58,7 @@ const initializePassport = () => {
             if (username.toLowerCase() === process.env.ADMIN_USER.toLowerCase()) {
                 if (password !== process.env.ADMIN_PASSWORD) {
                     errorMsg = "Password is incorrect";
-                    return done(null, false, errorMsg );
+                    return done(null, false, errorMsg);
                 }
                 userJwt = {
                     firstName: 'Admin',
@@ -71,20 +71,20 @@ const initializePassport = () => {
                 const user = await UsersModel.findOne({ email: { $regex: new RegExp(`^${username}$`, 'i') } });
                 if (!user) {
                     errorMsg = "Wrong flowerier";
-                    return done(null, false, errorMsg );
+                    return done(null, false, errorMsg);
                 }
                 if (!isValidPassword(user, password)) {
                     errorMsg = "Password is incorrect";
-                    return done(null, false, errorMsg );
+                    return done(null, false, errorMsg);
                 }
                 const userDTO = new UserDTO(user);
                 userJwt = userDTO;
             }
             const jwt = generateToken(userJwt);
-            return done(null, jwt);            
+            return done(null, jwt);
         } catch (error) {
             errorMsg = error.message;
-            return done( errorMsg );
+            return done(errorMsg);
         }
     }));
 
@@ -97,29 +97,29 @@ const initializePassport = () => {
         try {
             if (username.toLowerCase() !== req.email.toLowerCase()) {
                 errorMsg = "Invalid flowerier email in token";
-                return done(null, false, errorMsg );
+                return done(null, false, errorMsg);
             }
             if (username.toLowerCase() === process.env.ADMIN_USER.toLowerCase()) {
                 errorMsg = "Admin password cannot be reset";
-                return done(null, false, errorMsg );
+                return done(null, false, errorMsg);
             } else {
                 const user = await UsersModel.findOne({ email: { $regex: new RegExp(`^${username}$`, 'i') } });
                 if (!user) {
                     errorMsg = "Wrong flowerier";
-                    return done(null, false, errorMsg );
+                    return done(null, false, errorMsg);
                 }
                 if (isValidPassword(user, password)) {
                     errorMsg = "New password cannot be the same as the old one";
-                    return done(null, false, errorMsg );
+                    return done(null, false, errorMsg);
                 }
                 const newHashedPassword = createHash(password);
                 await UsersModel.updateOne({ _id: user._id }, { $set: { password: newHashedPassword } });
-                const userDTO = new UserDTO(user);                
+                const userDTO = new UserDTO(user);
                 return done(null, userDTO);
             }
         } catch (error) {
             errorMsg = error.message;
-            return done( errorMsg );
+            return done(errorMsg);
         }
     }));
 
@@ -140,10 +140,10 @@ const initializePassport = () => {
                 user = await UsersModel.create(user);
             }
             const userDTO = new UserDTO(user);
-            const jwt = generateToken(userDTO);            
+            const jwt = generateToken(userDTO);
             return done(null, jwt);
         } catch (error) {
-            return done( 'Github login failure' );
+            return done('Github login failure');
         }
     }));
 

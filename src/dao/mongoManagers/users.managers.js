@@ -22,8 +22,8 @@ class UserMongoManager {
 
     updateUser = async (userId, updatedFields) => {
         try {
-            const { role } = updatedFields;
-            const updatedUser = await this.usersModel.findByIdAndUpdate(userId, {role: role}, {new: true});
+            const { role, lastConnection, documents } = updatedFields;
+            const updatedUser = await this.usersModel.findByIdAndUpdate(userId, {role: role, lastConnection: lastConnection, documents: documents}, {new: true});
             if (!updatedUser) {
                 FloweryCustomError.createError({
                   name: 'updateUser Error',

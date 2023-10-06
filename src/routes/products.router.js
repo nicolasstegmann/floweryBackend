@@ -13,7 +13,7 @@ router.get('/mockingproducts', authorization(['admin', 'user', 'premium']), prod
 
 router.get('/:productId', authorization(['admin', 'user', 'premium']), productController.getProductById);
 
-router.post('/', authorization(['admin', 'premium']), uploader.array('thumbnails'), productController.addProduct);
+router.post('/', authorization(['admin', 'premium']), uploader('products').array('thumbnails'), productController.addProduct);
 
 router.put('/:productId', authorization(['admin', 'premium']), productController.updateProductById);
 

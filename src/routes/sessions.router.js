@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import sessionController from '../controllers/sessions.controller.js';
 import EnumErrors from '../utils/errorHandler/enum.js';
 import FloweryCustomError from '../utils/errorHandler/FloweryCustomError.js';
-import { validateResetPasswordToken } from '../config/middlewares.config.js';
+import { validateResetPasswordToken, jwtFromCookie, setLastConnection } from '../config/middlewares.config.js';
 import { authorization } from '../utils/utils.js'
 
 const router = Router();
@@ -13,7 +13,7 @@ router.use(cookieParser(process.env.AUTH_SECRET));
 
 router.post('/register', passportCall('register'), sessionController.register);
 
-router.post('/login', passportCall('login', { session: false }), sessionController.login);
+router.post('/login', passportCall('login', { session: false }), setLastConnection, sessionController.login);
 
 router.post('/resetpasswordrequest', sessionController.resetpasswordrequest);
 
@@ -23,7 +23,7 @@ router.get('/resetpasswordvalidation/:token', validateResetPasswordToken(true), 
 
 router.put('/resetpassword/:token', validateResetPasswordToken(true), passportCall('resetPassword'), sessionController.resetPassword);
 
-router.post('/logout', sessionController.logout);
+router.post('/logout', jwtFromCookie, setLastConnection, sessionController.logout);
 
 router.get('/github', passportCall('github', { scope: ['user:email'] }), sessionController.github);
 
