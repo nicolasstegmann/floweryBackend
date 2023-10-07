@@ -7,6 +7,7 @@ import { floweryRequestLogger } from '../utils/logger.js';
 import { default as jwt } from 'jsonwebtoken';
 import { UserService } from "../services/users.services.js";
 import { jwtVerify, tokenFromCookieExtractor } from '../utils/utils.js';
+import { th } from '@faker-js/faker';
 
 
 export const configureMiddlewares = (app) => {
@@ -77,3 +78,19 @@ export const setLastConnection = async (req, res, next) => {
       throw error;
   }
 };
+
+export const checkDocumentUploader = async (req, res, next) => {
+  try {
+      const user = req.user;
+      if (!user) {
+        return res.status(401).send({ status: 0, msg: 'Unauthorized' });
+      }
+      if ( user.email !== req.params.email ) {
+        return res.status(403).send({ status: 0, msg: 'Forbidden' });
+      }
+      next();
+  } catch (error) {
+      throw error;
+  }
+};
+
