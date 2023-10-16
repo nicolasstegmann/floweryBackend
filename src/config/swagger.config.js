@@ -14,13 +14,13 @@ export default function configureSwagger(app) {
                 description: `Flowery 4107 API - Authorization through JWT cookie is not supported in Swagger due to browser security restrictions.
                 [More information](https://swagger.io/docs/specification/authentication/cookie-authentication/).
                 \`Alternatively, you can get your cookie jwt credentials using the Flowery 4107 login page:\`
-                [Flowery login page](http://localhost:${process.env.PORT}/login)
+                [Flowery login page](${process.env.APP_URL}/login)
                 `,
             },
             servers: [
                 {
                     description: `${process.env.NODE_ENV} server`,
-                    url: `http://localhost:${process.env.PORT}`,
+                    url: `${process.env.APP_URL}`,
                 },
             ],
         },

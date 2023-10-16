@@ -173,7 +173,7 @@ class UserService {
                     statusCode: EnumErrors.INVALID_FIELDS_VALUE_ERROR.statusCode
                 });
             }
-            const newDocuments = documents.map(file => ({ name: file.originalname.split('.')[0].toLowerCase() , referenceUrl: `http://localhost:8080/files/uploads/documents/${file.filename}`}));
+            const newDocuments = documents.map(file => ({ name: file.originalname.split('.')[0].toLowerCase() , referenceUrl: `${process.env.APP_URL}/files/uploads/documents/${file.filename}`}));
             
             const userDocuments = user.documents || [];
             const updatedDocuments = { documents: [...userDocuments, ...newDocuments] };

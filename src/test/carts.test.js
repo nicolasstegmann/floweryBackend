@@ -17,7 +17,7 @@ configureDotenv(env);
 const expect = chai.expect;
 
 //Supertest
-const host = `http://localhost:${process.env.PORT}`;
+const host = `${process.env.APP_URL}`;
 const requester = supertest(host);
 
 //variables and managers

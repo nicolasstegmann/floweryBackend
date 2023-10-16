@@ -29,7 +29,7 @@ const addProduct = async (req, res, next) => {
     try {
         const newProductFields = req.body;
         const files = req.files;
-        const filesUrls = files.map(file => `http://localhost:8080/files/uploads/products/${file.filename}`);
+        const filesUrls = files.map(file => `${process.env.APP_URL}/files/uploads/products/${file.filename}`);
         if (filesUrls.length > 0) {
             newProductFields.thumbnails = filesUrls;
         } else {
