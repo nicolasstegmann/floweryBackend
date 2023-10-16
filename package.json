@@ -4,7 +4,7 @@
   "description": "Backend of e-commerce 4107 Flowery",
   "main": "src/app.js",
   "scripts": {
-    "start": "nodemon ./src/app.js",
+    "start": "node ./src/app.js",
     "start:dev": "cross-env NODE_ENV=dev nodemon ./src/app.js",
     "start:qa": "cross-env NODE_ENV=qa nodemon ./src/app.js",
     "start:prod": "cross-env NODE_ENV=prod nodemon ./src/app.js",
