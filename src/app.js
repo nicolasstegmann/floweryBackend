@@ -35,7 +35,6 @@ const PORT = process.env.PORT;
 const serverHttp = app.listen(PORT, () => {
     displayRoutes(app);
     floweryLogger('info', `Flowery 4107 Backend server is now up on port ${PORT} in ${env} mode using ${envFileName} file`);
-    console.log(`APP URL is ${process.env.APP_URL}`);
 });
 
 configureSocket(serverHttp, app);
