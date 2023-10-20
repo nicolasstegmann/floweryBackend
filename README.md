@@ -48,6 +48,7 @@
         <li><a href="#instalación">Instalación</a></li>
       </ul>
     </li>
+    <li><a href="#postman">Pruebalo en Postman</a></li>
     <li><a href="#contribuir">Contribuir</a></li>
     <li><a href="#contacto">Contacto</a></li>
   </ol>
@@ -195,6 +196,9 @@ Estos scripts utilizan el entorno `NODE_ENV` para configurar el ambiente de ejec
 
 <p align="right">(<a href="#readme-top">volver al inicio</a>)</p>
 
+<!-- POSTMAN -->
+## Pruébalo en Postman
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/2219687-667c8a48-3d5c-4c09-add9-bae613f43d62?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D2219687-667c8a48-3d5c-4c09-add9-bae613f43d62%26entityType%3Dcollection%26workspaceId%3D9fb63e1f-aca1-44e1-9e9e-7fa814eae4a4)
 <!-- CONTRIBUTING -->
 ## Contribuir
 
