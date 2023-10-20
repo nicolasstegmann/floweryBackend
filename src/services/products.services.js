@@ -2,7 +2,7 @@ import { productsRepository } from '../repositories/index.js';
 import { mockingProducts } from '../utils/mocks.js';
 import EnumErrors from '../utils/errorHandler/enum.js';
 import FloweryCustomError from '../utils/errorHandler/FloweryCustomError.js';
-
+import { sendEmail } from '../utils/mailer.js';
 class ProductService {
     constructor() {
         this.productRepository = productsRepository;
@@ -259,6 +259,11 @@ class ProductService {
                         statusCode: EnumErrors.BUSSINESS_RULES_ERROR.statusCode
                     });
                 }
+            }
+            if (user.role === 'admin' && product.owner !== 'admin') {
+                await sendEmail(product.owner, 'Flowery 4107 - Product deleted', `<h1>Flowery 4107 - Product ${product.code} deleted</h1>
+                <p>Your product ${product.title} has been deleted by user ${user.firstName} ${user.lastName}.</p>
+                <p>For any concern please contact the user at ${user.email}.</p>${user.firstName}`);
             }
             return await this.productRepository.deleteProduct(productId);
         } catch (error) {

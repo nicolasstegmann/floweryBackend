@@ -6,6 +6,32 @@ class UserMongoManager {
     constructor() {
         this.usersModel = UsersModel;
     }
+
+    getUsers = async (limit = 10, page = 1) => {
+        try {
+            let query = this.usersModel.find({ deletedAt: { $exists: false } });
+
+            const users = await this.usersModel.paginate(query, {
+                limit: parseInt(limit) || 10,
+                lean: true,
+                page: parseInt(page) || 1,
+                customLabels: {
+                    docs: 'users',
+                    totalDocs: 'totalUsers',
+                }
+              });
+
+            return users;
+        } catch (error) {
+            FloweryCustomError.createError({
+                name: 'getUsers Error',
+                message: `Failed to retrieve users: ${error.message}`,
+                type: EnumErrors.DATABASE_ERROR.type,
+                statusCode: EnumErrors.DATABASE_ERROR.statusCode
+                });
+        }
+    }
+
     getUserByEmail = async (email) => {
         try {
             const user = await this.usersModel.findOne({ email: { $regex: new RegExp(`^${email}$`, 'i') } });
@@ -70,6 +96,32 @@ class UserMongoManager {
               });             
         }
     }
+
+    deleteInactiveUsers = async () => {
+        try {
+            const inactivityDays = process.env.INACTIVITY_DAYS || 2;
+
+            const inactiveUsersToUpdate = await this.usersModel.find({
+                lastConnection: { $lt: new Date(Date.now() - (86400000 * inactivityDays)) },
+                deletedAt: { $exists: false },
+            });
+
+            const result = await this.usersModel.updateMany(
+                { _id: { $in: inactiveUsersToUpdate.map(user => user._id) } },
+                { $set: { deletedAt: new Date() } }
+            );
+    
+            return inactiveUsersToUpdate;
+        } catch (error) {
+            FloweryCustomError.createError({
+                name: 'deleteInactiveUsers Error',
+                message: `Failed to soft delete inactive users: ${error.message}`,
+                type: EnumErrors.DATABASE_ERROR.type,
+                statusCode: EnumErrors.DATABASE_ERROR.statusCode
+            });
+        }
+    }
+    
 
 }
 
