@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const usersCollection = 'users';
 
@@ -15,7 +16,16 @@ const usersSchema = new mongoose.Schema({
         referenceUrl: { type: String }
     }],
     lastConnection: { type: Date },
+    deletedAt: { type: Date, default: null }
 })
+
+const notSoftDeletedUsers = function () {
+    this.where({ deletedAt: null });
+}
+
+usersSchema.pre(/^find/, notSoftDeletedUsers);
+
+usersSchema.plugin(mongoosePaginate);
 
 const UsersModel = mongoose.model(usersCollection, usersSchema);
 
