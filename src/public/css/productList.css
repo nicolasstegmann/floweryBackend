@@ -3,6 +3,12 @@ h1 {
   text-align: center;
 }
 
+.userProfile {
+  background-color: #f2f2f2;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
 .cardsContainer {
   display: flex;
   flex-wrap: wrap;
@@ -41,4 +47,17 @@ h1 {
 
 .card .price {
   font-weight: bold;
+}
+
+.logout {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
 }

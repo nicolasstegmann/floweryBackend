@@ -5,7 +5,7 @@ import { createHash, isValidPassword, tokenFromCookieExtractor } from "../utils/
 import GitHubStrategy from "passport-github2";
 import jwt from 'passport-jwt';
 import { default as token } from 'jsonwebtoken';
-import UserDTO from "../dto/users.dto.js";
+import { UserDTO } from "../dto/users.dto.js";
 
 // JWT
 const JWTStrategy = jwt.Strategy;

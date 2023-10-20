@@ -1,4 +1,5 @@
 import { ProductService } from '../services/products.services.js';
+import { UserService } from '../services/users.services.js';
 
 import CartMongoManager from '../dao/mongoManagers/carts.manager.js';
 
@@ -60,6 +61,19 @@ const carts = async (req, res) => {
     }
 }
 
+const users = async (req, res) => {
+    try {
+        const { limit = 10, page = 1 } = req.query;
+        // Get baseUrl for navigation links
+        const baseUrl = `${req.protocol}://${req.get('host')}${req.originalUrl.split('?')[0]}`;
+        const usersServices = new UserService();
+        const users = await usersServices.getUsers(limit, page, baseUrl);
+        res.render('userList', {title: 'Flowery 4107 Users', style: 'userList.css', users: users, user: req.user});
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+}
+
 export default {
     register,
     login,
@@ -70,5 +84,6 @@ export default {
     realTimeProducts,
     webchat,
     products,
-    carts
+    carts,
+    users
 };
